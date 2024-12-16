@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const { default: isEmail } = require("validator/lib/isEmail");
 
 const userSchem = new mongoose.Schema(
   {
@@ -41,7 +40,7 @@ const userSchem = new mongoose.Schema(
       lowercase: true,
       trim: true,
       validate(value) {
-        if (!validator(isEmail)) {
+        if (!validator.isEmail(value)) {
           throw new Error("Invalid email address");
         }
       },
@@ -77,11 +76,6 @@ const userSchem = new mongoose.Schema(
     },
     skills: {
       type: [String],
-      validate(value) {
-        if (value.length < 3) {
-          throw new Error("Skills array should contain at least 3 skills");
-        }
-      },
     },
   },
   {
