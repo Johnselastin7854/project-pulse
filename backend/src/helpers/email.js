@@ -1,20 +1,19 @@
-const resend = require("../config/resendConfig");
 const { verifyEmailTemplate } = require("./templates");
+const transporter = require("../config/nodemailerConfig");
 
-const sendVerificationEmail = async (email, verificationToken) => {
+const sendOrgVerificationEmail = async (email, verificationToken, url) => {
   try {
-    const { data, error } = await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
-      to: [email],
+    await transporter.sendMail({
+      from: process.env.NODE_MAILER_EMAIL,
+      to: email,
       subject: "Verify your organisation email",
-      html: verifyEmailTemplate.replace(
-        "{verificationToken}",
-        verificationToken
-      ),
+      html: verifyEmailTemplate
+        .replace("{publicPath}", url)
+        .replace("{verificationToken}", verificationToken),
     });
   } catch (error) {
     throw new Error("Error sending verification email");
   }
 };
 
-module.exports = { sendVerificationEmail };
+module.exports = { sendOrgVerificationEmail };
