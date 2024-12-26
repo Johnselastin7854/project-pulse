@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const Organization = require("../model/organization");
-const { sendVerificationEmail } = require("../helpers/email");
+const { sendOrgVerificationEmail } = require("../helpers/email");
 const generateVerificationToken = require("../helpers/emailVerificationToken");
 const { generateJWTToken } = require("../utils/generateJWTToken");
 const { organizationValidator } = require("../helpers/validation");
@@ -35,7 +35,6 @@ const registerOrganization = async (req, res) => {
     const verifyEmailToken = generateVerificationToken();
 
     const { url, publicId } = await uploadToCloudinary(file.path);
-    console.log(url, publicId);
 
     const newOrganization = new Organization({
       name,
@@ -44,17 +43,26 @@ const registerOrganization = async (req, res) => {
       photoUrl: url,
       publicId,
       description,
-      role,
+      role: "ADMIN",
       verificationToken: verifyEmailToken,
       verificationTokenExpires: Date.now() + 30 * 1000,
     });
 
     await newOrganization.save();
-    generateJWTToken(res, name, role, email);
-    await sendVerificationEmail(newOrganization.email, verifyEmailToken);
+    generateJWTToken(
+      res,
+      newOrganization?.name,
+      newOrganization?.role,
+      newOrganization?.email
+    );
+    await sendOrgVerificationEmail(
+      newOrganization.email,
+      verifyEmailToken,
+      url
+    );
     res.status(201).json({
       success: true,
-      message: "User created successfully",
+      message: "Organization created successfully",
       user: {
         ...newOrganization._doc,
         password: undefined,

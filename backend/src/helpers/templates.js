@@ -23,23 +23,17 @@ const verifyEmailTemplate = `<head>
       <tbody>
         <tr style="width:100%">
           <td>
-            <img
-              alt="Plaid"
-              height="88"
-              src="https://react-email-demo-lpdmf0ryo-resend.vercel.app/static/plaid-logo.png"
-              style="display:block;outline:none;border:none;text-decoration:none;margin:0 auto"
-              width="212"
-            />
+           <img
+            alt="Plaid"
+            height="88"
+            src={publicPath}
+            style="display:block;outline:none;border:none;text-decoration:none;margin:0 auto;width:88px;height:88px;border-radius:50%;"
+           />
             <p
               style="font-size:11px;line-height:16px;margin:16px 8px 8px 8px;color:#0a85ea;font-weight:700;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;height:16px;letter-spacing:0;text-transform:uppercase;text-align:center"
             >
               Verify Your Identity
             </p>
-            <h1
-              style="color:#000;display:inline-block;font-family:HelveticaNeue-Medium,Helvetica,Arial,sans-serif;font-size:20px;font-weight:500;line-height:24px;margin-bottom:0;margin-top:0;text-align:center"
-            >
-              Enter the following code to finish linking Venmo.
-            </h1>
             <table
               align="center"
               width="100%"
@@ -61,23 +55,6 @@ const verifyEmailTemplate = `<head>
                 </tr>
               </tbody>
             </table>
-            <p
-              style="font-size:15px;line-height:23px;margin:0;color:#444;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;letter-spacing:0;padding:0 40px;text-align:center"
-            >
-              Not expecting this email?
-            </p>
-            <p
-              style="font-size:15px;line-height:23px;margin:0;color:#444;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;letter-spacing:0;padding:0 40px;text-align:center"
-            >
-              Contact<!-- -->
-              <a
-                href="mailto:login@plaid.com"
-                style="color:#444;text-decoration-line:none;text-decoration:underline"
-                target="_blank"
-                >login@plaid.com</a
-              >
-              <!-- -->if you did not request this code.
-            </p>
           </td>
         </tr>
       </tbody>
