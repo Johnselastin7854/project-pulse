@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minLength: 8,
+      minlength: 8,
       validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error(
@@ -78,6 +78,14 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+    verificationToken: String,
+    verificationTokenExpires: Date,
   },
   {
     timestamps: true,

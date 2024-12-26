@@ -14,6 +14,21 @@ const userValidation = (req) => {
   }
 };
 
+const organizationValidator = (req) => {
+  const { email, password, name, description } = req.body;
+
+  if (!name) {
+    throw new Error("Organization Name is Required");
+  } else if (!description) {
+    throw new Error("Description is Required");
+  } else if (!validator.isEmail(email)) {
+    throw new Error("Invalid email format");
+  } else if (!validator.isStrongPassword(password)) {
+    throw new Error("Please enter a strong password");
+  }
+};
+
 module.exports = {
   userValidation,
+  organizationValidator,
 };
