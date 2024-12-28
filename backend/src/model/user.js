@@ -92,20 +92,20 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.methods.generateToken = async () => {
-  const user = this;
+// userSchema.methods.generateToken = async () => {
+//   const user = this;
 
-  const tokenData = {
-    username: user.firstName,
-    _id: user._id,
-  };
+//   const tokenData = {
+//     username: user.firstName,
+//     _id: user._id,
+//   };
 
-  const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
-    expiresIn: "10h",
-  });
+//   const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, {
+//     expiresIn: "10h",
+//   });
 
-  return token;
-};
+//   return token;
+// };
 
 userSchema.methods.validatePassword = async (userEnterPassword) => {
   const user = this;

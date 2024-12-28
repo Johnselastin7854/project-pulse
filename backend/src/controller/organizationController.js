@@ -46,7 +46,7 @@ const registerOrganization = async (req, res) => {
       description,
       role: "ADMIN",
       verificationToken: verifyEmailToken,
-      verificationTokenExpires: Date.now() + 30 * 1000,
+      verificationTokenExpires: Date.now() + 30 * 60 * 1000,
     });
 
     await newOrganization.save();
