@@ -82,10 +82,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    role: {
-      enum: ["TEAM_LEAD", "MEMMBER"],
-      default: "MEMBER",
-    },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     verificationToken: String,
