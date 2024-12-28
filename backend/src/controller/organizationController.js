@@ -1,10 +1,15 @@
 const bcrypt = require("bcrypt");
 const Organization = require("../model/organization");
+const User = require("../model/user");
 const { sendOrgVerificationEmail } = require("../helpers/email");
 const generateVerificationToken = require("../helpers/emailVerificationToken");
 const { generateJWTToken } = require("../utils/generateJWTToken");
 const { organizationValidator } = require("../helpers/validation");
 const uploadToCloudinary = require("../helpers/uploadToCloudinary");
+const {
+  checkEmailInUser,
+  checkEmailInOrganization,
+} = require("../helpers/emailCheckHelper");
 
 const registerOrganization = async (req, res) => {
   try {
@@ -16,15 +21,17 @@ const registerOrganization = async (req, res) => {
       return res.status(400).json({ message: "Logo is required" });
     }
 
-    const exsistingOrganization = await Organization.findOne({
-      email,
-    });
-
-    if (exsistingOrganization) {
+    const existingUser = await checkEmailInUser(email);
+    if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    if (exsistingOrganization?.name === name) {
+    const existingOrganization = await checkEmailInOrganization(email);
+    if (existingOrganization) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    if (existingOrganization?.name === name) {
       return res
         .status(400)
         .json({ message: "Organization name already exists" });
@@ -45,7 +52,7 @@ const registerOrganization = async (req, res) => {
       description,
       role: "ADMIN",
       verificationToken: verifyEmailToken,
-      verificationTokenExpires: Date.now() + 30 * 1000,
+      verificationTokenExpires: Date.now() + 30 * 60 * 1000,
     });
 
     await newOrganization.save();
@@ -63,7 +70,7 @@ const registerOrganization = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Organization created successfully",
-      user: {
+      data: {
         ...newOrganization._doc,
         password: undefined,
       },
