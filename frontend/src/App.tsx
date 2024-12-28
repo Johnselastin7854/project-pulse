@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 const RegisterOrg = lazy(() => import("./pages/organisation/Register"));
-const UserRegister = lazy(() => import("./pages/user/SignUp"));
+// const UserRegister = lazy(() => import("./pages/user/SignUp"));
 // const UserSignIn = lazy(() => import("./pages/user/SignIn"));
 // const OrgDashboard = lazy(
 //   () => import("./pages/organisation/dashboard/Dashboard")
