@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const Organization = require("../model/organization");
+const User = require("../model/user");
 const { sendOrgVerificationEmail } = require("../helpers/email");
 const generateVerificationToken = require("../helpers/emailVerificationToken");
 const { generateJWTToken } = require("../utils/generateJWTToken");

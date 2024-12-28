@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const Organization = require("../model/organization");
 const bcrypt = require("bcrypt");
 const { userValidation } = require("../helpers/validation");
 const generateVerificationToken = require("../helpers/emailVerificationToken");
@@ -95,4 +96,43 @@ const logOutUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logOutUser };
+const verifyEmail = async (req, res) => {
+  const { email, code, type } = req.body;
+
+  if (!email || !code || !type) {
+    return res.status(400).json({ message: "Invalid Request Data" });
+  }
+
+  try {
+    let entity;
+    if (type === "user") {
+      entity = await Organization.findOne({ email });
+    } else if (type === "user") {
+      entity = await User.findOne({ email });
+    } else {
+      return res.status(400).json({ message: "Invalid type Specified" });
+    }
+
+    if (!entity) {
+      return res.status(404).json({ message: `Invalid ${type}` });
+    }
+
+    if (entity.isVerified) {
+      return res.status(400).json({ message: `${type} already verified` });
+    }
+
+    if (entity.verificationToken !== code) {
+      return res.status(400).json({ message: "Invalid verification code" });
+    }
+
+    isVerified = true;
+    verificationToken = null;
+    VerficationTokenExpires = null;
+    await entity.save();
+    res.status(200).json({ message: `${type} email verified successfully` });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { registerUser, loginUser, logOutUser, verifyEmail };
