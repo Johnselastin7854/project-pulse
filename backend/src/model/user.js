@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       min: 18,
     },
-    photUrl: {
+    photoUrl: {
       type: String,
       default: "https://via.placeholder.com/150",
       validate(value) {
@@ -81,6 +81,10 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    role: {
+      enum: ["TEAM_LEAD", "MEMMBER"],
+      default: "MEMBER",
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
