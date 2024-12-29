@@ -11,36 +11,59 @@ import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { z } from "zod";
+import { organizationRegisterSchema } from "@/lib/organizationValidator";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 const OrganizationRegister = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const userImage = false;
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Form submitted");
-  };
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const toggleCofirmPasswordVisibility = () => {
-    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
-  };
-  // Trigger file input click
-  // const handleButtonClick = () => {
-  //   fileInputRef.current.click();
-  // };
 
   const handleNextStep = () => {
     setStep(step + 1);
   };
-
   const handlePreviousStep = () => {
     setStep(step - 1);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<OrganizationFormData>({
+    resolver: zodResolver(organizationRegisterSchema),
+  });
+  const handleFileInputClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setValue("file", file, { shouldValidate: true });
+    }
+  };
+  const uploadedFile = watch("file");
+
+  type OrganizationFormData = z.infer<typeof organizationRegisterSchema>;
+
+  const onRegisterOrganization = (data: OrganizationFormData) => {
+    console.log("Form submitted", data);
+    navigate("/organization/register/verify-email", {
+      state: { email: data.email },
+    });
   };
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
@@ -51,40 +74,52 @@ const OrganizationRegister = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form
+            id="organization-form"
+            onSubmit={handleSubmit(onRegisterOrganization)}
+          >
             {step === 1 && (
               <div className="space-y-5">
                 <>
                   <div className="space-y-2">
-                    <Label htmlFor="picture">Logo</Label>
-
-                    <div className="flex gap-3 ">
+                    <Label htmlFor="file">Logo</Label>
+                    <div className="flex gap-3 items-center">
                       <div className="h-12 w-12 rounded-md bg-transparent border-[#ddd] border flex items-center justify-center overflow-hidden">
-                        {userImage ? (
+                        {uploadedFile ? (
                           <img
-                            src={userImage}
-                            alt="User"
+                            src={URL.createObjectURL(uploadedFile)}
+                            alt="Preview"
                             className="w-full h-full object-cover"
                           />
                         ) : (
                           <img src="/plus.png" alt="Add" className="w-4 h-4" />
                         )}
                       </div>
-                      <Input
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        // onChange={(e) => {
-                        //   console.log("Selected file:", e.target.files[0]);
-                        // }}
-                      />
-                      <Button
-                        // onClick={handleButtonClick}
-                        variant="outline"
-                        className="bg-transparent text-xs font-semibold"
-                      >
-                        Upload
-                      </Button>
+                      <div className="flex flex-col ">
+                        <Input
+                          type="file"
+                          id="file"
+                          accept="image/png, image/jpeg"
+                          {...register("file")}
+                          ref={fileInputRef}
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+
+                        <Button
+                          onClick={handleFileInputClick}
+                          variant="outline"
+                          className="bg-transparent text-xs font-semibold"
+                        >
+                          Upload
+                        </Button>
+                        {errors.file && (
+                          <p className="text-red-500 text-xs mt-2">
+                            {errors.file.message?.toString() ||
+                              "Invalid file input"}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex flex-col space-y-2">
@@ -93,15 +128,27 @@ const OrganizationRegister = () => {
                       id="name"
                       placeholder="Name of your project"
                       className="bg-[#2F3D53]"
+                      {...register("name")}
                     />
+                    {errors?.name && (
+                      <p className="text-red-500 text-xs">
+                        {errors?.name?.message}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col space-y-2">
                     <Label htmlFor="description">Description</Label>
                     <Textarea
                       id="description"
-                      className="bg-[#2F3D53]"
+                      className="bg-[#2F3D53] h-28"
                       placeholder="Type your message here."
+                      {...register("description")}
                     />
+                    {errors?.description && (
+                      <p className="text-red-500 text-xs">
+                        {errors?.description?.message}
+                      </p>
+                    )}
                   </div>
                 </>
               </div>
@@ -116,7 +163,13 @@ const OrganizationRegister = () => {
                     placeholder="Enter Email"
                     className="bg-[#2F3D53]"
                     type="email"
+                    {...register("email")}
                   />
+                  {errors?.email && (
+                    <p className="text-red-500 text-xs">
+                      {errors?.email?.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col space-y-2">
                   <Label htmlFor="password">Password</Label>
@@ -127,10 +180,11 @@ const OrganizationRegister = () => {
                       placeholder="Enter  password"
                       className="bg-[#2F3D53] pr-10"
                       type={isPasswordVisible ? "text" : "password"}
+                      {...register("password")}
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                      className="absolute right-3 top-5 transform -translate-y-1/2"
                       onClick={togglePasswordVisibility}
                     >
                       {isPasswordVisible ? (
@@ -139,29 +193,11 @@ const OrganizationRegister = () => {
                         <Eye size={"15px"} className="text-gray-400" />
                       )}
                     </button>
-                  </div>
-                </div>
-                <div className="flex flex-col space-y-2 relative">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
-
-                  <div className="relative">
-                    <Input
-                      id="confirm-password"
-                      placeholder="Enter confirm password"
-                      className="bg-[#2F3D53] pr-10"
-                      type={isConfirmPasswordVisible ? "text" : "password"}
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                      onClick={toggleCofirmPasswordVisibility}
-                    >
-                      {isConfirmPasswordVisible ? (
-                        <EyeOff size={"15px"} className="text-gray-400" />
-                      ) : (
-                        <Eye size={"15px"} className="text-gray-400" />
-                      )}
-                    </button>
+                    {errors?.password && (
+                      <p className="text-red-500 text-xs mt-2">
+                        {errors?.password?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -178,7 +214,11 @@ const OrganizationRegister = () => {
               <Button variant="outline" onClick={handlePreviousStep}>
                 <ArrowLeft /> Back
               </Button>
-              <Button className="ml-auto" type="submit">
+              <Button
+                className="ml-auto"
+                type="submit"
+                form="organization-form"
+              >
                 Create
               </Button>
             </div>
