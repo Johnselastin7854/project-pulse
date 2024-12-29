@@ -6,6 +6,9 @@ const RegisterOrg = lazy(() => import("./pages/organisation/auth/Register"));
 const VerifyEmailOrg = lazy(
   () => import("./pages/organisation/auth/VerifyEmail")
 );
+const SetupNewMembers = lazy(
+  () => import("./pages/organisation/auth/InviteMember")
+);
 // const UserRegister = lazy(() => import("./pages/user/SignUp"));
 // const UserSignIn = lazy(() => import("./pages/user/SignIn"));
 // const OrgDashboard = lazy(
@@ -30,6 +33,10 @@ function App() {
         <Route
           path="/organization/register/verify-email"
           element={<VerifyEmailOrg />}
+        />
+        <Route
+          path="/organization/team-setup/new"
+          element={<SetupNewMembers />}
         />
       </Routes>
     </Suspense>

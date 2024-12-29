@@ -53,7 +53,7 @@ const VerifyEmail = () => {
             Verify Your Account
           </CardTitle>
           <CardDescription className="space-y-3">
-            <h2 className="text-3xl text-white">We Just emailed you.</h2>
+            <h2 className="text-3xl text-white">We just emailed you.</h2>
             <p>Please enter the code we emailed you.</p>
             <p className="text-sm">{maskedEmail}</p>
           </CardDescription>
@@ -73,27 +73,27 @@ const VerifyEmail = () => {
                       <InputOTP maxLength={6} {...field}>
                         <InputOTPGroup>
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={0}
                           />
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={1}
                           />
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={2}
                           />
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={3}
                           />
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={4}
                           />
                           <InputOTPSlot
-                            className="border-white w-12 h-12"
+                            className="border-gray-300 w-12 h-12 bg-[#2F3D53]"
                             index={5}
                           />
                         </InputOTPGroup>
